@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "creationTime": "11.11.2022",
+    "title": "Erster Post",
+    "content": "Erster Postinhalt",
+    "user": "User 1",
+    "comments": [
+      "Kommentar 1",
+      "Kommentar 2",
+      "Kommentar 3"
+    ],
+    "likes": 4,
+    "dislikes": 1
+  },
+  {
+    "id": 2,
+    "creationTime": "11.11.2022",
+    "title": "Erster Post",
+    "content": "Erster Postinhalt",
+    "user": "User 1",
+    "comments": [
+      "Kommentar 1",
+      "Kommentar 2",
+      "Kommentar 3"
+    ],
+    "likes": 4,
+    "dislikes": 1
+  },
+  {
+    "id": 3,
+    "creationTime": "11.11.2022",
+    "title": "Erster Post",
+    "content": "Erster Postinhalt",
+    "user": "User 1",
+    "comments": [
+      "Kommentar 1",
+      "Kommentar 2",
+      "Kommentar 3"
+    ],
+    "likes": 4,
+    "dislikes": 1
+  },
+  {
+    "id": 4,
+    "creationTime": "11.11.2022",
+    "title": "Erster Post",
+    "content": "Erster Postinhalt",
+    "user": "User 1",
+    "comments": [
+      "Kommentar 1",
+      "Kommentar 2",
+      "Kommentar 3"
+    ],
+    "likes": 4,
+    "dislikes": 1
+  }
+]
