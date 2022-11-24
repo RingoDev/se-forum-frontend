@@ -12,13 +12,13 @@ export default function Posts({ posts }: Props) {
       {posts.map((p) => (
         <div key={p.id} className={"py-6"}>
           <Link to={"/" + p.id}>
-              <div className={"flex flex-row justify-between items-end mb-4"}>
-            <div>
-              <span className={"text-gray-600"}>{p.id} </span>
-              <span className={"text-xl"}>{p.title}</span>
-            </div>
-            <p>Erstellungsdatum: {p.creationTime}</p>
+            <div className={"flex flex-row justify-between items-end mb-4"}>
+              <div>
+                <span className={"text-gray-600"}>{p.id} </span>
+                <span className={"text-xl"}>{p.title}</span>
               </div>
+              <p>Erstellungsdatum: {p.creationTime}</p>
+            </div>
             <p>{p.content.substring(0, 200)}...</p>
           </Link>
         </div>
