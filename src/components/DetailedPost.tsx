@@ -80,7 +80,7 @@ export default function DetailedPost({ posts }: Props) {
     <div className={"max-w-2xl p-12 mx-auto"} ref={inputRef}>
       <h1 className={"text-2xl text-center mb-4"}>{post.title}</h1>
       <div className={"text-end mb-8"}>
-        erstellt von: {post.user.username} am {post.creationTime}
+        erstellt von: <Link className={"text-blue-700"} to={"/user/" + post.user.id}>{post.user.username}</Link> am {post.creationTime}
       </div>
       <div>{post.content}</div>
       <div className={"flex flex-row justify-between"}>

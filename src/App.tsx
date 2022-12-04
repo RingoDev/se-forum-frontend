@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
 import Posts from "./components/Posts";
 import DetailedPost from "./components/DetailedPost";
 import { CommentT, PostT, UserT } from "./types";
+import LoginForm from "./components/LoginForm";
+import RegisterForm from "./components/RegisterForm";
+import DetailedUser from "./components/DetailedUser";
 
 const exampleUser: UserT = {
   id: 1,
@@ -60,16 +63,25 @@ export default function App() {
   return (
     <Router>
       <div>
-        <nav className={"flex flex-row justify-center items-center h-12"}>
+        <nav className={"flex flex-row justify-center items-center h-20"}>
           <ul>
             <li>
               <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/login">Einloggen</Link>
+            </li>
+            <li>
+              <Link to="/register">Registrieren</Link>
             </li>
           </ul>
         </nav>
         <Routes>
           <Route path="/" element={<Posts posts={posts} />} />
           <Route path="/:id" element={<DetailedPost posts={posts} />} />
+          <Route path="/user/:id" element={<DetailedUser posts={posts} />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterForm />} />
         </Routes>
       </div>
     </Router>

@@ -17,6 +17,7 @@ export default function Posts({ posts }: Props) {
                 <span className={"text-gray-600"}>{p.id} </span>
                 <span className={"text-xl"}>{p.title}</span>
               </div>
+              <p>Erstellt von: {p.user.username}</p>
               <p>Erstellungsdatum: {p.creationTime}</p>
             </div>
             <p>{p.content.substring(0, 200)}...</p>
