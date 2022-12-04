@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { CommentT, UserT, PostT } from "../types";
 import useEffectSkipInitial from "../util/util";
 import { getCurrentDateTime, } from "../util/util";

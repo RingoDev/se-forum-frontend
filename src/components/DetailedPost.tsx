@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { PostT, UserT, CommentT } from "../types";
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
