@@ -10,12 +10,14 @@ export default function useEffectSkipInitial(fn: any, inputs: any) {
   }, inputs);
 }
 
-
+//TODO: example comments have no exact time, match to format used in db later
 export function getCurrentDateTime(): string {
   var currentdate = new Date();
+  const hours = currentdate.getHours();
+  const minutes = currentdate.getMinutes();
   return currentdate.getDate() + "."
     + (currentdate.getMonth() + 1) + "."
     + currentdate.getFullYear() + ", "
-    + currentdate.getHours() + ":"
-    + currentdate.getMinutes()
+    + (hours < 10 ? '0' + hours : hours) + ":"
+    + (minutes < 10 ? '0' + minutes : minutes)
 }  
