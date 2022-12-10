@@ -80,9 +80,6 @@ export default function App() {
               <Link to="/register">Registrieren</Link>
             </li>
             <li>
-              <p>{"Hello "+ ReactSession.get("username")}</p>
-            </li>
-            <li>
               <Link to="/create-post">Post erstellen</Link>
             </li>
           </ul>
