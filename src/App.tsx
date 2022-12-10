@@ -6,6 +6,9 @@ import { CommentT, PostT, UserT } from "./types";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import DetailedUser from "./components/DetailedUser";
+import { ReactSession } from 'react-client-session';
+import PostCreation from "./components/PostCreation";
+
 
 const exampleUser: UserT = {
   id: 1,
@@ -60,6 +63,8 @@ const posts: PostT[] = [
 ];
 
 export default function App() {
+  //ReactSession.setStoreType("localStorage");
+  //ReactSession.set("username", "Bob");
   return (
     <Router>
       <div>
@@ -74,6 +79,12 @@ export default function App() {
             <li>
               <Link to="/register">Registrieren</Link>
             </li>
+            <li>
+              <p>{"Hello "+ ReactSession.get("username")}</p>
+            </li>
+            <li>
+              <Link to="/create-post">Post erstellen</Link>
+            </li>
           </ul>
         </nav>
         <Routes>
@@ -82,6 +93,7 @@ export default function App() {
           <Route path="/user/:id" element={<DetailedUser posts={posts} />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
+          <Route path="/create-post" element={<PostCreation />} />
         </Routes>
       </div>
     </Router>
