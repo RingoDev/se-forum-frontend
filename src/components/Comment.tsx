@@ -34,6 +34,8 @@ const exampleComment: CommentT = {
   post: examplePost2,
 };
 
+//TODO: submit to backend
+
 export default function Comment({ comment }: Props) {
 
   const [commentInputIsVisible, setCommentInputVisibility] = useState(false);

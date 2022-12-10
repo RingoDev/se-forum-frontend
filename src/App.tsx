@@ -62,9 +62,11 @@ const posts: PostT[] = [
   { ...examplePost2, comments: [exampleComment2] },
 ];
 
+//TODO: fetch all Posts from backend
+
 export default function App() {
   //ReactSession.setStoreType("localStorage");
-  //ReactSession.set("username", "Bob");
+  //ReactSession.set("username", "Thomas");
   return (
     <Router>
       <div>

@@ -17,7 +17,8 @@ const PostCreation = () => {
     const creationTime = getCurrentDateTime(); //TODO check with backend
     const content = text;
     const user = author; //TODO check with backend
-    const post = { creationTime, title, content, user};
+    const id = -1;
+    const post = { id, creationTime, title, content, user};
 
     fetch("http://localhost:8080/post/add", {
       method: "POST",
