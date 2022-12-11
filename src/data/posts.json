@@ -1,6 +1,6 @@
 [
   {
-    "id": 2,
+    "id": "",
     "creationTime": "11.11.2022",
     "title": "Erster Post",
     "content": "Erster Postinhalt",
@@ -10,7 +10,7 @@
     "dislikes": 1
   },
   {
-    "id": 3,
+    "id": "",
     "creationTime": "11.11.2022",
     "title": "Erster Post",
     "content": "Erster Postinhalt",
@@ -20,7 +20,7 @@
     "dislikes": 1
   },
   {
-    "id": 4,
+    "id": "",
     "creationTime": "11.11.2022",
     "title": "Erster Post",
     "content": "Erster Postinhalt",

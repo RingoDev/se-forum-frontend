@@ -1,87 +1,82 @@
-import React, { useState, useRef } from "react";
-import { CommentT, UserT, PostT } from "../types";
+import React, { useRef, useState } from "react";
+import { CommentT } from "../types";
 import useEffectSkipInitial from "../util/util";
-import { getCurrentDateTime, } from "../util/util";
 import CommentInput from "./CommentInput";
 
 interface Props {
   comment: CommentT;
+  addSubComment: (parentCommentId: string, commentText: string) => void;
 }
-
-const exampleUser: UserT = {
-  id: 1,
-  username: "XxPeterxX",
-};
-
-const examplePost2: PostT = {
-  comments: [],
-  id: 2,
-  creationTime: "11.11.2022",
-  title: "Zweiter Post",
-  content:
-    "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-  user: exampleUser,
-  likes: [],
-  dislikes: [],
-};
-
-const exampleComment: CommentT = {
-  id: 1,
-  creationTime: "11.11.2022",
-  content: "Das ist eine sehr gut Idee",
-  user: exampleUser, //should be list of User objects
-  comments: [], //should be list of Comment objects
-  post: examplePost2,
-};
 
 //TODO: submit to backend
 
-export default function Comment({ comment }: Props) {
-
+export default function Comment({ comment, addSubComment }: Props) {
   const [commentInputIsVisible, setCommentInputVisibility] = useState(false);
-  const [comments, setComments] = useState<CommentT[]>(comment.comments);
-  const inputRef = useRef<null | HTMLDivElement>(null)
+  const inputRef = useRef<null | HTMLDivElement>(null);
 
   useEffectSkipInitial(() => {
     if (inputRef.current && !commentInputIsVisible) {
-      inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      inputRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [commentInputIsVisible]);
 
-  const handleCommentSent = (input: string) => {
-    const newComment = structuredClone(exampleComment)
-    newComment.content = input
-    newComment.creationTime = getCurrentDateTime()
-    comment.comments.push(newComment)
-    setComments(comment.comments)
-    handleInputVisibility()
-  }
+  const handleCommentCreate = (commentText: string) => {
+    console.log(
+      "handling creation of comment with text in comment",
+      commentText,
+      comment
+    );
 
-  const handleInputVisibility = () => {
-    setCommentInputVisibility(!commentInputIsVisible)
-  }
+    addSubComment(comment.id, commentText);
+  };
+
+  const toggleInputVisibility = () => {
+    setCommentInputVisibility(!commentInputIsVisible);
+  };
 
   return (
-    <div ref={inputRef} className={"py-6 px-6"}>
-      <div className={"border-l-2 border-b-2  px-6"}>
+    <div ref={inputRef} className={"py-6 pl-2"}>
+      <div className={"border-l-2 border-b-2  pl-2 pb-2"}>
         <div>{comment.content}</div>
         <div className={"flex flex-row justify-between"}>
-          <button onClick={handleInputVisibility}>  <span className="material-symbols-outlined">
-            comment
-          </span> Kommentieren</button>
+          {!commentInputIsVisible ? (
+            <button
+              onClick={toggleInputVisibility}
+              className={"flex items-center gap-2"}
+            >
+              <span className="material-symbols-outlined"> comment </span>
+              <span>Kommentieren</span>
+            </button>
+          ) : null}
           <div className={"grid grid-cols-1 pt-6"}>
             <span>{comment.creationTime}</span>
             <span>Ersteller: {comment.user.username}</span>
           </div>
         </div>
-        <CommentInput visibility={commentInputIsVisible} handleCommentSent={handleCommentSent}></CommentInput>
-        {comments ? comments.map((c) => (
-          <div key={c.id}>
-            <Comment comment={c} />
-          </div>
-        ))
-          : null
-        }
+        <CommentInput
+          visibility={commentInputIsVisible}
+          handleCommentCreate={handleCommentCreate}
+          handleAbort={toggleInputVisibility}
+        />
+        {comment.subcomments
+          ? comment.subcomments.map((c) => {
+              const handleAddSubComment = (
+                parentCommentId: string,
+                commentText: string
+              ) => {
+                // const clonedComments = comment.subcomments.slice()
+                // clonedComments[index] = commentToUpdate
+                // handleCommentUpdate({...comment,subcomments:clonedComments})
+
+                addSubComment(parentCommentId, commentText);
+              };
+              return (
+                <div key={c.id}>
+                  <Comment comment={c} addSubComment={handleAddSubComment} />
+                </div>
+              );
+            })
+          : null}
       </div>
     </div>
   );

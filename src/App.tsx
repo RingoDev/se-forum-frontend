@@ -1,100 +1,88 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
-import Posts from "./components/Posts";
 import DetailedPost from "./components/DetailedPost";
-import { CommentT, PostT, UserT } from "./types";
+import { UserT } from "./types";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import DetailedUser from "./components/DetailedUser";
-import { ReactSession } from 'react-client-session';
 import PostCreation from "./components/PostCreation";
+import { UserContext } from "./util/util";
+import AllPosts from "./components/AllPosts";
 
-
-const exampleUser: UserT = {
-  id: 1,
-  username: "XxPeterxX",
-};
-
-const examplePost: PostT = {
-  comments: [],
-  id: 1,
-  creationTime: "11.11.2022",
-  title: "Erster Post",
-  content:
-    "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-  user: exampleUser,
-  likes: [],
-  dislikes: [],
-};
-
-const examplePost2: PostT = {
-  comments: [],
-  id: 2,
-  creationTime: "11.11.2022",
-  title: "Zweiter Post",
-  content:
-    "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-  user: exampleUser,
-  likes: [],
-  dislikes: [],
-};
-
-const exampleComment: CommentT = {
-  id: 1,
-  creationTime: "11.11.2022",
-  content: "Das ist eine sehr gut Idee",
-  user: exampleUser, //should be list of User objects
-  comments: [], //should be list of Comment objects
-  post: examplePost,
-};
-
-const exampleComment2: CommentT = {
-  id: 2,
-  creationTime: "15.11.2022",
-  content: "Finde ich super!",
-  user: exampleUser, //should be list of User objects
-  comments: [], //should be list of Comment objects
-  post: examplePost2,
-};
-
-const posts: PostT[] = [
-  { ...examplePost, comments: [exampleComment] },
-  { ...examplePost2, comments: [exampleComment2] },
-];
+function getUserFromSessionStorage(): UserT | null {
+  const userString = sessionStorage.getItem("user");
+  if (userString === null) return null;
+  else return JSON.parse(userString) as UserT;
+}
 
 //TODO: fetch all Posts from backend
 
 export default function App() {
-  //ReactSession.setStoreType("localStorage");
-  //ReactSession.set("username", "Thomas");
+  const [loggedInUser, setLoggedInUser] = useState<UserT | null>(
+    getUserFromSessionStorage()
+  );
+
+  const logUserIn = (user: UserT) => {
+    sessionStorage.setItem("user", JSON.stringify(user));
+    setLoggedInUser(getUserFromSessionStorage());
+  };
+
+  const logUserOut = () => {
+    sessionStorage.removeItem("user");
+    setLoggedInUser(getUserFromSessionStorage());
+  };
+
+  console.log("logged in as: ", loggedInUser);
+
   return (
-    <Router>
-      <div>
-        <nav className={"flex flex-row justify-center items-center h-20"}>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/login">Einloggen</Link>
-            </li>
-            <li>
-              <Link to="/register">Registrieren</Link>
-            </li>
-            <li>
-              <Link to="/create-post">Post erstellen</Link>
-            </li>
-          </ul>
-        </nav>
-        <Routes>
-          <Route path="/" element={<Posts posts={posts} />} />
-          <Route path="/:id" element={<DetailedPost posts={posts} />} />
-          <Route path="/user/:id" element={<DetailedUser posts={posts} />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/register" element={<RegisterForm />} />
-          <Route path="/create-post" element={<PostCreation />} />
-        </Routes>
-      </div>
-    </Router>
+    <UserContext.Provider value={loggedInUser}>
+      <Router>
+        <div>
+          <nav className={"flex flex-row justify-center items-center h-20"}>
+            <ul className={"flex flex-row justify-center items-center"}>
+              <li className={"px-6"}>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/create-post">Post erstellen</Link>
+              </li>
+
+              <li className={"px-6"}>
+                {loggedInUser === null ? null : (
+                  <Link to={"/user/" + loggedInUser.id}>Profil</Link>
+                )}
+              </li>
+
+              <li className={"px-6"}>
+                {loggedInUser === null ? (
+                  <Link to="/login">Einloggen</Link>
+                ) : (
+                  <button onClick={() => logUserOut()}>Logout</button>
+                )}
+              </li>
+              <li className={"px-6"}>
+                {loggedInUser === null ? (
+                  <Link to="/register">Registrieren</Link>
+                ) : null}
+              </li>
+            </ul>
+          </nav>
+          <Routes>
+            <Route path="/" element={<AllPosts />} />
+            <Route path="/post/:id" element={<DetailedPost />} />
+            <Route path="/user/:id" element={<DetailedUser />} />
+            <Route
+              path="/login"
+              element={<LoginForm setLoggedInUser={logUserIn} />}
+            />
+            <Route
+              path="/register"
+              element={<RegisterForm setLoggedInUser={logUserIn} />}
+            />
+            <Route path="/create-post" element={<PostCreation />} />
+          </Routes>
+        </div>
+      </Router>
+    </UserContext.Provider>
   );
 }

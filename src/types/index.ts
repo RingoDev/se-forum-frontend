@@ -1,5 +1,5 @@
 export interface PostT {
-  id: number;
+  id: string;
   creationTime: string;
   title: string;
   content: string;
@@ -9,32 +9,38 @@ export interface PostT {
   dislikes: Dislike[];
 }
 
-export interface CommentT {
-  id: number;
+export type CommentT = DetailedCommentT;
+
+export interface DetailedCommentT {
+  id: string;
   creationTime: string;
   content: string;
-  post: PostT;
+  post: string;
   user: UserT;
-  comments: CommentT[];
+  subcomments: DetailedCommentT[];
+}
+
+export interface CommentDtoT {
+  content: string;
+  user: string;
+  subcomments: CommentDtoT[];
 }
 
 export interface UserT {
-  id: number;
+  id: string;
   username: string;
 }
 
 export interface Like {
-  id: number;
+  id: string;
   creationTime: string;
   user: UserT;
   post: PostT;
 }
 
 export interface Dislike {
-  id: number;
+  id: string;
   creationTime: string;
   user: UserT;
   post: PostT;
 }
-
-
