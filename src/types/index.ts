@@ -35,12 +35,12 @@ export interface Like {
   id: string;
   creationTime: string;
   user: UserT;
-  post: PostT;
+  post: string;
 }
 
 export interface Dislike {
   id: string;
   creationTime: string;
   user: UserT;
-  post: PostT;
+  post: string;
 }

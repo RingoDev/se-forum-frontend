@@ -27,7 +27,7 @@ export default function Posts({ posts }: Props) {
               className={"flex justify-between w-full  italic text-slate-600"}
             >
               <p>{p.user.username}</p>
-              <p className={"italic"}>{p.creationTime}</p>
+              <p className={"italic"}>{p.creationTime.substring(0, 19).replace("T", ", ")}</p>
             </div>
           </Link>
         </div>

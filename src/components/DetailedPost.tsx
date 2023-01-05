@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { CommentDtoT, PostT } from "../types";
+import { CommentDtoT, PostT, Like, Dislike } from "../types";
 import axios from "axios";
 import CommentInput from "./CommentInput";
 import Comment from "./Comment";
@@ -12,12 +12,32 @@ export default function DetailedPost() {
   const [post, setPost] = useState<PostT>();
   const loggedInUser = useContext(UserContext);
 
+  const [likeStyle, setLikeStyle] = useState<String>();
+  const [dislikeStyle, setDislikeStyle] = useState<String>();
+
+
   useEffect(() => {
     axios
       .get<PostT>("http://localhost:8080/post/" + postId)
       .then((r) => {
         if (r.status === 200) {
           setPost(r.data);
+
+          if(loggedInUser) {
+            r.data.likes.forEach(like => {
+              if(like.user.id==loggedInUser.id) {
+                setLikeStyle("bg-green-600")
+              }
+            })
+
+            r.data.dislikes.forEach(dislike => {
+              if(dislike.user.id==loggedInUser.id) {
+                setDislikeStyle("bg-red-600")
+              }
+            })
+          }
+
+
         } else {
           console.log(r);
         }
@@ -56,6 +76,7 @@ export default function DetailedPost() {
         if (r.status === 200) {
           console.log("Kommentar hinzugefügt!");
           setPost(r.data);
+          toggleInputVisibility()
         } else {
           console.warn(r);
         }
@@ -88,12 +109,73 @@ export default function DetailedPost() {
         if (r.status === 200) {
           console.log("Unterkommentar hinzugefügt!");
           setPost(r.data);
+     
         } else {
           console.warn(r);
         }
       })
       .catch(console.error);
   };
+
+  const handleLike =  () => {
+    if (post === undefined || loggedInUser === null) return;
+    const like: Partial<Like> = {
+      user: loggedInUser,
+      post: post.id
+    };
+
+    axios
+      .put<PostT, any, Partial<Like>>(
+        "http://localhost:8080/post/like" , like 
+      )
+      .then((r) => {
+        if (r.status === 200) {
+          toggleLikeStyle(r);
+          setPost(r.data);
+        } else {
+          console.warn(r);
+        }
+      })
+      .catch(console.error);
+  };
+
+  const handleDislike =  () => {
+    if (post === undefined || loggedInUser === null) return;
+    const dislike: Partial<Dislike> = {
+      user: loggedInUser,
+      post: post.id
+    };
+
+    axios
+      .put<PostT, any, Partial<Dislike>>(
+        "http://localhost:8080/post/dislike" , dislike 
+      )
+      .then((r) => {
+        if (r.status === 200) {  
+          toggleLikeStyle(r);  
+          setPost(r.data);             
+        } else {
+          console.warn(r);
+        }
+      })
+      .catch(console.error);
+  };
+
+  const toggleLikeStyle = (r:any) => {
+    if (post === undefined || loggedInUser === null) return;
+    if(r.data.likes.length>post.likes.length) {
+      setLikeStyle("bg-green-600")
+    } else {
+      setLikeStyle("");
+    }
+
+    if(r.data.dislikes.length>post.dislikes.length) {
+      setDislikeStyle("bg-red-600")
+    } else {
+      setDislikeStyle("");
+    }
+  };
+  
 
   // const handleUpdateComments = (comments: CommentT[]) => {
   //     if (post === undefined || loggedInUser === null) return
@@ -134,24 +216,36 @@ export default function DetailedPost() {
     <div className={"max-w-4xl p-12 mx-auto"} ref={inputRef}>
       <h1 className={"text-2xl text-center mb-4"}>{post.title}</h1>
       <div className={"text-end mb-8"}>
-        erstellt von:{" "}
+        Erstellt von {" "}
         <Link className={"text-blue-700"} to={"/user/" + post.user.id}>
           {post.user.username}
-        </Link>{" "}
-        am {post.creationTime}
+        </Link>{", "}
+       {post.creationTime.substring(0, 19).replace("T", ", ")}
       </div>
       <div>{post.content}</div>
       <hr className={"my-4"} />
       <div className={"flex flex-row justify-between"}>
-        {/*<div>Likes: {likes}</div>*/}
-        {/*<button onClick={() => handleLike(1)}>*/}
-        {/*  <span className="material-symbols-outlined"> thumb_up </span>*/}
-        {/*</button>*/}
-        {/*<div>Dislikes: {dislikes}</div>*/}
-        {/*<button onClick={() => handleLike(-1)}>*/}
-        {/*  <span className="material-symbols-outlined"> thumb_down </span>*/}
-        {/*</button>*/}
+  
+
+
         <div className={"flex justify-end w-full"}>
+            
+
+        <button
+              onClick={() => handleLike()}
+              className={`flex items-center gap-2 border border-slate-900 rounded-l-lg ${likeStyle}` }
+            >
+          <span className="material-symbols-outlined"> thumb_up </span>
+          <span className={"mr-1"}>     {post.likes ? post.likes.length : 0}</span>
+            </button>
+    
+        <button
+          onClick={() => handleDislike()}
+          className={`flex items-center gap-2 border border-slate-900 rounded-r-lg mr-2 ${dislikeStyle}` }
+          >
+      <span className="material-symbols-outlined"> thumb_down </span>
+      <span className={"mr-1"}>    {post.dislikes ? post.dislikes.length : 0}</span>
+        </button>
           {!commentInputIsVisible ? (
             <button
               onClick={toggleInputVisibility}
@@ -161,6 +255,8 @@ export default function DetailedPost() {
               <span>Kommentieren</span>
             </button>
           ) : null}
+
+          
         </div>
       </div>
       <CommentInput
@@ -171,7 +267,7 @@ export default function DetailedPost() {
       {post.comments.map((c) => {
         return (
           <div key={c.id}>
-            <Comment comment={c} addSubComment={handleAddSubCommentToComment} />
+            <Comment comment={c} addSubComment={handleAddSubCommentToComment}  />
           </div>
         );
       })}

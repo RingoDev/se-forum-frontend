@@ -10,6 +10,8 @@ interface Props {
 
 const RegisterForm = ({ setLoggedInUser }: Props) => {
   const [username, setUsername] = useState<string>();
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const [showError, setShowError] = useState<boolean>();
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setUsername(e.target.value);
@@ -17,28 +19,37 @@ const RegisterForm = ({ setLoggedInUser }: Props) => {
 
   const handleSubmit = () => {
     if (username !== undefined) {
+
       axios
         .post<UserT, any, any>("http://localhost:8080/user/add", {
           username: username,
           passwordHash: "random-hash",
         })
         .then((r) => {
+
           if (r.status === 200) {
             setLoggedInUser(r.data);
             console.log("registered as user ", r.data);
           } else {
             console.warn(r);
           }
+          
         })
-        .catch(console.error);
+        .catch( (error) =>{
+          console.log(error);
+          setErrorMessage(error.response.data.message)
+        })
     }
   };
+
 
   const loggedInUser = useContext(UserContext);
 
   if (loggedInUser) {
     return <Navigate to={"/user/" + loggedInUser.id} />;
   }
+
+
 
   return (
     <>
@@ -50,13 +61,15 @@ const RegisterForm = ({ setLoggedInUser }: Props) => {
           <label htmlFor={"username"} className={"text-black-700"}>
             Benutzername
           </label>
+          {errorMessage ?  <div className={"text-xs text-red-500"}>{errorMessage}</div> : null }
           <input
             onChange={handleChange}
             className={
-              "w-full py-2 bg-gray-100 text-gray-500 px-1 outline-none mb-4"
+              "w-full py-2 bg-gray-100 text-gray-500 px-1 outline-none mb-4 border-2 rounded-md"
             }
             type={"username"}
           />
+      
           <label htmlFor={"password"} className={"text-black-700"}>
             Passwort
           </label>

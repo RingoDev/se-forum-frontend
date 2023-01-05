@@ -28,6 +28,7 @@ export default function Comment({ comment, addSubComment }: Props) {
     );
 
     addSubComment(comment.id, commentText);
+    toggleInputVisibility();
   };
 
   const toggleInputVisibility = () => {
@@ -49,7 +50,7 @@ export default function Comment({ comment, addSubComment }: Props) {
             </button>
           ) : null}
           <div className={"grid grid-cols-1 pt-6"}>
-            <span>{comment.creationTime}</span>
+            <span>{comment.creationTime.substring(0, 19).replace("T", ", ")}</span>
             <span>Ersteller: {comment.user.username}</span>
           </div>
         </div>
@@ -72,7 +73,7 @@ export default function Comment({ comment, addSubComment }: Props) {
               };
               return (
                 <div key={c.id}>
-                  <Comment comment={c} addSubComment={handleAddSubComment} />
+                  <Comment comment={c} addSubComment={handleAddSubComment}  />
                 </div>
               );
             })
