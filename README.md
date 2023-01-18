@@ -1,4 +1,7 @@
-# SE-FORUM [SE Service Engineering 259039 (2022W)]
+# SE-FORUM Frontend
+
+| SE Service Engineering 259039 (2022W) |
+|-|
 
 This project constitutes the frontend of the SE-FORUM.
 
