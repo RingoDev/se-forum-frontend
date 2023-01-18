@@ -5,7 +5,7 @@
 
 This project constitutes the frontend of the SE-FORUM.
 
-> The corresponding backend project can be found [here](https://github.com/domi-schuhmi/se-forum-backend).
+> The corresponding backend project can be found [here](https://github.com/domi-schuhmi/se-forum-backend) (access required).
 
 ## Run
 
