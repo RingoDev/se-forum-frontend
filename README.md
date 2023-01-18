@@ -1,9 +1,9 @@
-# Getting Started with Create React App
+# SE-FORUM [SE Service Engineering 259039 (2022W)]
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project constitutes the frontend of the SE-FORUM.
 
-## Available Scripts
+The corresponding backend project can be found [here](https://github.com/domi-schuhmi/se-forum-backend).
 
-In the project directory, you can run:
+## Run
 
-### `yarn start`
+To run the project, use: `yarn start`
